@@ -9,9 +9,9 @@ The project combines **Python, Flask, Scikit-learn, Machine Learning, SQLite, an
 ---
 🚀 Live Demo
 
-🌐 Live Demo: [Add your deployed application link here]
+🌐 Live Demo: [Available soon]
 
-📂 GitHub Repository: [Add your GitHub repository link here]
+📂 GitHub Repository: [https://github.com/abhinav9721/Disha-AI]
 
 
 ## 🚀 Key Features
