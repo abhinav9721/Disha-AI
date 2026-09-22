@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block body %}
+<header class="topbar"><div class="in">
+  <div class="brand"><span class="mini"></span>{{ t('brand') }}</div>
+  <nav class="tabs" aria-label="Main">
+    <a class="tab {{ 'on' if active != 'explore' else '' }}" href="{{ url_for('home') }}">{{ t('navPath') }}</a>
+    <a class="tab {{ 'on' if active == 'explore' else '' }}" href="{{ url_for('explore') }}">{{ t('navExplore') }}</a>
+  </nav>
+  <span class="sp"></span>
+  <a class="lang" href="{{ url_for('set_lang', code='hi' if lang == 'en' else 'en') }}">{{ 'हिन्दी' if lang == 'en' else 'English' }}</a>
+  <span class="who">{{ user_name }}</span>
+  <form method="post" action="{{ url_for('logout') }}" style="display:inline">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <button class="lang" type="submit">{{ t('logout') }}</button>
+  </form>
+</div></header>
+<main class="wrap">{% block content %}{% endblock %}</main>
+{% endblock %}

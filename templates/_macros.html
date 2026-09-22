@@ -1,0 +1,63 @@
+{# ---- form controls: real checkboxes / radios, styled as chips and option cards ---- #}
+{% macro chip_check(name, value, label, checked) -%}
+<span class="cw"><input type="checkbox" id="{{ name }}-{{ value }}" name="{{ name }}" value="{{ value }}" {{ 'checked' if checked else '' }}><label class="chip" for="{{ name }}-{{ value }}">{{ label }}</label></span>
+{%- endmacro %}
+
+{% macro chip_radio(name, value, label, checked) -%}
+<span class="cw"><input type="radio" id="{{ name }}-{{ value }}" name="{{ name }}" value="{{ value }}" {{ 'checked' if checked else '' }}><label class="chip" for="{{ name }}-{{ value }}">{{ label }}</label></span>
+{%- endmacro %}
+
+{% macro opt_radio(name, value, label, checked) -%}
+<span class="ow"><input type="radio" id="{{ name }}-{{ value }}" name="{{ name }}" value="{{ value }}" {{ 'checked' if checked else '' }}><label class="opt" for="{{ name }}-{{ value }}">{{ label }}</label></span>
+{%- endmacro %}
+
+{# ---- career display blocks ---- #}
+{% macro stone(pct, small=false) -%}
+<div class="stone {{ 'sm' if small else '' }}" role="img" aria-label="{{ t('match') }} {{ pct }}%"><div class="top">{{ t('match') }}</div><div class="num">{{ pct }}<small>%</small></div></div>
+{%- endmacro %}
+
+{% macro detail(c, r=none) %}
+<div class="detail">
+  <p class="desc">{{ c.desc }}</p>
+  <div class="tags">
+    <span class="tag k">{{ t('salary') }}: {{ c.sal }}</span>
+    <span class="tag">{{ t('minEdu') }}: {{ edu_label(c.edu) }}</span>
+    <span class="tag">{{ t('cost') }}: {{ cost_label(c.cost) }}</span>
+    {% if c.reloc %}<span class="tag">{{ t('needReloc') }}</span>{% endif %}
+    {% if c.net %}<span class="tag">{{ t('needNet') }}</span>{% endif %}
+  </div>
+  {% if r %}
+    {% if r.reasons %}<h4>{{ t('why') }}</h4><ul class="why">{% for x in r.reasons %}<li>{{ x }}</li>{% endfor %}</ul>{% endif %}
+    {% if r.missing %}<h4>{{ t('learn') }}</h4><div class="tags">{% for k in r.missing %}<span class="tag w">{{ skill_name(k) }}</span>{% endfor %}</div>{% endif %}
+    {% for n in r.notes %}<p class="warn">{{ n }}</p>{% endfor %}
+  {% endif %}
+  <h4>{{ t('roadmap') }}</h4>
+  <ol class="steps">{% for s in c.steps %}<li>{{ s }}</li>{% endfor %}</ol>
+  <h4>{{ t('schemes') }}</h4>
+  <p>{{ c.schemes }}</p>
+</div>
+{% endmacro %}
+
+{% macro top_card(r) %}
+{% set c = r.c %}{% set cat = cat_of(c.cat) %}
+<article class="top-card">
+  <div class="sign">{{ stone(r.pct) }}<div><span class="catl">{{ cat.icon }} {{ L(cat) }}</span><h3>{{ L(c) }}</h3></div></div>
+  <div class="tb">{{ detail(c, r) }}</div>
+</article>
+{% endmacro %}
+
+{% macro row_card(r, future=false) %}
+{% set c = r.c %}{% set cat = cat_of(c.cat) %}
+<details class="row">
+  <summary>{{ stone(r.pct, true) }}<span class="rt"><b>{{ L(c) }}</b><small>{{ cat.icon }} {{ L(cat) }}</small>{% if future %}<small class="need">{{ t('minEdu') }}: {{ edu_label(c.edu) }}</small>{% endif %}</span><span class="sal">{{ c.sal }}</span></summary>
+  <div class="tb">{{ detail(c, r) }}</div>
+</details>
+{% endmacro %}
+
+{% macro explore_card(c) %}
+{% set cat = cat_of(c.cat) %}
+<details class="gcard">
+  <summary><span class="ic">{{ cat.icon }}</span><span><b>{{ L(c) }}</b><small>{{ L(cat) }}</small></span></summary>
+  {{ detail(c) }}
+</details>
+{% endmacro %}

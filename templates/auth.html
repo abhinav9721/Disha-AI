@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block body %}
+{% set posts = [('agri', '', 'g'), ('it', 'l', ''), ('govt', '', ''), ('health', 'l', 'g'), ('tech', '', '')] %}
+<div class="auth">
+  <section class="auth-l">
+    <div class="brand"><span class="mini"></span>{{ t('brand') }}</div>
+    <div><h1>{{ t('heroH') }}</h1><p class="lead">{{ t('heroP') }}</p></div>
+    <div class="posts" aria-hidden="true">
+      {% for cid, side, tone in posts %}
+        <div class="post {{ side }} {{ tone }}" style="--d:{{ 0.1 + loop.index0 * 0.12 }}s">{{ L(cat_of(cid)) }}</div>
+      {% endfor %}
+    </div>
+    <ul class="facts">
+      <li>{{ t('f1').replace('{n}', careers_count|string) }}</li>
+      <li>{{ t('f2') }}</li>
+      <li>{{ t('f3') }}</li>
+    </ul>
+  </section>
+
+  <section class="auth-r"><div class="panel">
+    <div class="langrow"><a class="lang" href="{{ url_for('set_lang', code='hi' if lang == 'en' else 'en') }}">{{ 'हिन्दी' if lang == 'en' else 'English' }}</a></div>
+    <h2>{{ t('signup') if mode == 'signup' else t('login') }}</h2>
+    <form method="post" action="{{ url_for(mode) }}" novalidate>
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      {% if mode == 'signup' %}
+      <div class="field"><label for="name">{{ t('name') }}</label><input id="name" name="name" autocomplete="name" value="{{ form.name }}"></div>
+      {% endif %}
+      <div class="field"><label for="mobile">{{ t('mobile') }}</label><input id="mobile" name="mobile" type="tel" inputmode="numeric" maxlength="10" autocomplete="username" value="{{ form.mobile }}"></div>
+      <div class="field"><label for="pass">{{ t('pass') }}</label><input id="pass" name="password" type="password" autocomplete="{{ 'new-password' if mode == 'signup' else 'current-password' }}"></div>
+      <p class="err" role="alert">{{ error }}</p>
+      <button class="btn wide" type="submit">{{ t('signup') if mode == 'signup' else t('login') }}</button>
+    </form>
+    <p class="switch">{{ t('haveAcc') if mode == 'signup' else t('noAcc') }}
+      <a class="btn link" href="{{ url_for('login' if mode == 'signup' else 'signup') }}">{{ t('login') if mode == 'signup' else t('signup') }}</a></p>
+    <div class="or"></div>
+    <form method="post" action="{{ url_for('guest') }}">
+      <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+      <button class="btn alt wide" type="submit">{{ t('guest') }}</button>
+    </form>
+    <p class="hint" style="margin-top:12px">{{ t('demoNote') }}</p>
+  </div></section>
+</div>
+{% endblock %}

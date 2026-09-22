@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% from "_macros.html" import chip_check, chip_radio, opt_radio with context %}
+{% block content %}
+<form class="narrow wiz" method="post" action="{{ url_for('wizard', step=step) }}" novalidate>
+  <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+
+  <div class="road" role="img" aria-label="{{ names[step] }}">
+    {% for n in names %}
+      <div class="stop {{ 'done' if loop.index0 < step else ('now' if loop.index0 == step else '') }}"><span class="dot">{{ '✓' if loop.index0 < step else loop.index }}</span>{{ n }}</div>
+      {% if not loop.last %}<span class="leg {{ 'done' if loop.index0 < step else '' }}"></span>{% endif %}
+    {% endfor %}
+  </div>
+
+  {% if step == 0 %}
+    <h2 class="pg">{{ t('s1') }}</h2>
+    <div class="field"><label for="f-name">{{ t('name') }}</label><input id="f-name" name="name" value="{{ p.name }}" autocomplete="name"></div>
+    <div class="row2">
+      <div class="field"><label for="f-age">{{ t('age') }}</label><input id="f-age" name="age" type="number" inputmode="numeric" min="14" max="45" value="{{ p.age }}"></div>
+      <div class="field"><label for="f-gender">{{ t('gender') }}</label>
+        <select id="f-gender" name="gender">
+          <option value="" {{ 'selected' if p.gender == '' else '' }}>{{ t('skip') }}</option>
+          <option value="m" {{ 'selected' if p.gender == 'm' else '' }}>{{ t('male') }}</option>
+          <option value="f" {{ 'selected' if p.gender == 'f' else '' }}>{{ t('female') }}</option>
+          <option value="o" {{ 'selected' if p.gender == 'o' else '' }}>{{ t('oth') }}</option>
+        </select></div>
+    </div>
+    <div class="field"><label for="f-state">{{ t('state') }}</label>
+      <select id="f-state" name="state">
+        <option value="">{{ t('pickState') }}</option>
+        {% for s in STATES %}<option value="{{ s }}" {{ 'selected' if p.state == s else '' }}>{{ s }}</option>{% endfor %}
+      </select></div>
+    <div class="field"><span class="lbl">{{ t('area') }}</span>
+      <div class="chips">{% for a in AREAS %}{{ chip_radio('area', a.v, L(a), p.area == a.v) }}{% endfor %}</div></div>
+
+  {% elif step == 1 %}
+    <h2 class="pg">{{ t('s2') }}</h2>
+    <div class="field"><span class="lbl">{{ t('edu') }}</span>
+      <div class="opts">{% for e in EDU %}{{ opt_radio('edu', e.v, L(e), p.edu == e.v) }}{% endfor %}</div></div>
+    <div class="field" id="streamBox"><span class="lbl">{{ t('stream') }}</span>
+      <div class="chips">{% for s in STREAMS %}{{ chip_radio('stream', s.id, L(s), p.stream == s.id) }}{% endfor %}</div></div>
+    <div class="field"><span class="lbl">{{ t('skills') }}</span>
+      <div class="chips">{% for s in SKILLS %}{{ chip_check('skills', s.id, L(s), s.id in p.skills) }}{% endfor %}</div></div>
+
+  {% else %}
+    <h2 class="pg">{{ t('s3') }}</h2>
+    <div class="field"><span class="lbl">{{ t('interests') }}</span>
+      <div class="chips">{% for c in CATS %}{{ chip_check('interests', c.id, c.icon ~ ' ' ~ L(c), c.id in p.interests) }}{% endfor %}</div></div>
+    <div class="field"><span class="lbl">{{ t('goal') }}</span>
+      <div class="opts">{% for g in GOALS %}{{ opt_radio('goal', g.v, L(g), p.goal == g.v) }}{% endfor %}</div></div>
+    <div class="row2">
+      <div class="field"><span class="lbl">{{ t('internet') }}</span>
+        <div class="chips">{{ chip_radio('internet', 'yes', t('yes'), p.internet == 'yes') }}{{ chip_radio('internet', 'no', t('no'), p.internet == 'no') }}</div></div>
+      <div class="field"><span class="lbl">{{ t('relocate') }}</span>
+        <div class="chips">{{ chip_radio('relocate', 'yes', t('yes'), p.relocate == 'yes') }}{{ chip_radio('relocate', 'no', t('no'), p.relocate == 'no') }}</div></div>
+    </div>
+    <div class="field"><span class="lbl">{{ t('budget') }}</span>
+      <div class="opts">{% for b in BUDGET %}{{ opt_radio('budget', b.v, L(b), p.budget == b.v) }}{% endfor %}</div></div>
+  {% endif %}
+
+  <p class="err" role="alert">{{ error }}</p>
+  <div class="acts">
+    {% if step > 0 %}<button class="btn alt" type="submit" name="back" value="1">{{ t('back') }}</button>{% endif %}
+    {% if step < 2 %}<button class="btn" type="submit">{{ t('next') }}</button>
+    {% else %}<button class="btn gold" type="submit">{{ t('submit') }}</button>{% endif %}
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% from "_macros.html" import explore_card with context %}
+{% block content %}
+<h2 class="pg">{{ t('navExplore') }}</h2>
+<form method="get" action="{{ url_for('explore') }}" class="searchrow">
+  <input type="hidden" name="cat" value="{{ cat }}">
+  <div class="field"><label for="q">{{ t('search') }}</label><input id="q" name="q" type="search" value="{{ q }}" autocomplete="off"></div>
+  <button class="btn" type="submit">{{ t('searchBtn') }}</button>
+</form>
+
+<div class="chips catbar" style="margin-top:16px">
+  <a class="chip {{ 'on' if cat == 'all' else '' }}" href="{{ url_for('explore', cat='all', q=q or None) }}">{{ t('allF') }}</a>
+  {% for c in CATS %}
+    <a class="chip {{ 'on' if cat == c.id else '' }}" href="{{ url_for('explore', cat=c.id, q=q or None) }}">{{ c.icon }} {{ L(c) }}</a>
+  {% endfor %}
+</div>
+
+<div class="grid">
+  {% for c in items %}{{ explore_card(c) }}{% else %}<p class="empty">{{ t('none') }}</p>{% endfor %}
+</div>
+{% endblock %}

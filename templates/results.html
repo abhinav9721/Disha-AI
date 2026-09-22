@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% from "_macros.html" import top_card, row_card with context %}
+{% block content %}
+<section class="head">
+  <h2 class="pg">{{ t('hello') }}, {{ p.name or user_name }}</h2>
+  <p class="lead2">{{ t('resSub') }}</p>
+  <div class="tags">{% for x in summary %}<span class="tag">{{ x }}</span>{% endfor %}</div>
+  <div class="acts noprint">
+    <a class="btn alt" href="{{ url_for('wizard', step=0) }}">{{ t('edit') }}</a>
+    <a class="btn alt" href="{{ url_for('explore') }}">{{ t('exploreAll') }}</a>
+  </div>
+</section>
+
+{% if R.best %}
+  <h3 class="sec" style="margin-top:0">{{ t('topMatch') }}</h3>
+  {{ top_card(R.best[0]) }}
+  {% if R.best|length > 1 %}
+    <h3 class="sec">{{ t('others') }}</h3>
+    {% for r in R.best[1:] %}{{ row_card(r) }}{% endfor %}
+  {% endif %}
+{% endif %}
+
+{% if R.future %}
+  <h3 class="sec">{{ t('future') }}</h3>
+  <p class="hint" style="margin-bottom:10px">{{ t('futureSub') }}</p>
+  {% for r in R.future %}{{ row_card(r, true) }}{% endfor %}
+{% endif %}
+
+<details class="how"><summary>{{ t('how') }}</summary><p>{{ t('howP') }}</p></details>
+<p class="hint disc">{{ t('disc') }}</p>
+<p class="hint noprint">{{ t('printNote') }}</p>
+{% endblock %}

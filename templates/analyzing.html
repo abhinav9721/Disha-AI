@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block head %}<meta http-equiv="refresh" content="2;url={{ url_for('results') }}">{% endblock %}
+{% block content %}
+<div class="loading"><div>
+  <div class="strip"></div>
+  <div class="lmsgs">
+    <p class="lmsg" style="--i:0">{{ t('l1') }}</p>
+    <p class="lmsg" style="--i:1">{{ t('l2').replace('{n}', careers_count|string) }}</p>
+    <p class="lmsg" style="--i:2">{{ t('l3') }}</p>
+  </div>
+</div></div>
+{% endblock %}
